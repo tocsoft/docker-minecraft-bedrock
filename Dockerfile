@@ -1,8 +1,10 @@
-FROM buildpack-deps:bionic-curl
+FROM buildpack-deps:focal-curl
+
 ARG BEDROCK_SERVER_VERSION=1.16.201.03
 ARG BEDROCK_SERVER_ZIP=bedrock-server-${BEDROCK_SERVER_VERSION}.zip
 ARG BEDROCK_SERVER_ZIP_URL=https://minecraft.azureedge.net/bin-linux/${BEDROCK_SERVER_ZIP}
-ARG BEDROCK_SERVER_ZIP_SHA256=6DCBF0CD4D417A8F7BEF774883B0EF0A4C55CF4089FCCEBB9C1DA5727A9276C8
+
+ARG BEDROCK_SERVER_ZIP_SHA256=8d5504db26ba7519edbcd39bb89060a0ff09b97b7e5b2e15564e84cbaa53aaaf
 ARG BEDROCK_SERVER_ZIP_SHA256_FILE=${BEDROCK_SERVER_ZIP}.sha256
 
 RUN set -eu && \
@@ -23,12 +25,11 @@ WORKDIR /data
 
 RUN cp /minecraft/server.properties . && \
     cp /minecraft/whitelist.json . && \
-    touch ops.json && \
+    echo '[]' > permissions.json && \
     chown -R minecraft:minecraft /data && \
     chmod +x /docker-entrypoint.sh
 
-EXPOSE 19132/udp \
-       19132
+EXPOSE 19132/udp
 
 USER minecraft
 
